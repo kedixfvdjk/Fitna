@@ -164,50 +164,71 @@ alter table public.quests enable row level security;
 alter table public.quest_completions enable row level security;
 alter table public.nutrition_entries enable row level security;
 
+-- Every policy is dropped first so this script can be re-run safely
+-- (e.g. after a partial failure) without "policy already exists" errors.
+
 -- profiles: id *is* the user id
+drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own" on public.profiles
   for select using (auth.uid() = id);
+drop policy if exists "profiles_insert_own" on public.profiles;
 create policy "profiles_insert_own" on public.profiles
   for insert with check (auth.uid() = id);
+drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own" on public.profiles
   for update using (auth.uid() = id) with check (auth.uid() = id);
+drop policy if exists "profiles_delete_own" on public.profiles;
 create policy "profiles_delete_own" on public.profiles
   for delete using (auth.uid() = id);
 
 -- characters
+drop policy if exists "characters_select_own" on public.characters;
 create policy "characters_select_own" on public.characters
   for select using (auth.uid() = user_id);
+drop policy if exists "characters_insert_own" on public.characters;
 create policy "characters_insert_own" on public.characters
   for insert with check (auth.uid() = user_id);
+drop policy if exists "characters_update_own" on public.characters;
 create policy "characters_update_own" on public.characters
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "characters_delete_own" on public.characters;
 create policy "characters_delete_own" on public.characters
   for delete using (auth.uid() = user_id);
 
 -- daily_activity
+drop policy if exists "daily_activity_select_own" on public.daily_activity;
 create policy "daily_activity_select_own" on public.daily_activity
   for select using (auth.uid() = user_id);
+drop policy if exists "daily_activity_insert_own" on public.daily_activity;
 create policy "daily_activity_insert_own" on public.daily_activity
   for insert with check (auth.uid() = user_id);
+drop policy if exists "daily_activity_update_own" on public.daily_activity;
 create policy "daily_activity_update_own" on public.daily_activity
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "daily_activity_delete_own" on public.daily_activity;
 create policy "daily_activity_delete_own" on public.daily_activity
   for delete using (auth.uid() = user_id);
 
 -- quests
+drop policy if exists "quests_select_own" on public.quests;
 create policy "quests_select_own" on public.quests
   for select using (auth.uid() = user_id);
+drop policy if exists "quests_insert_own" on public.quests;
 create policy "quests_insert_own" on public.quests
   for insert with check (auth.uid() = user_id);
+drop policy if exists "quests_update_own" on public.quests;
 create policy "quests_update_own" on public.quests
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "quests_delete_own" on public.quests;
 create policy "quests_delete_own" on public.quests
   for delete using (auth.uid() = user_id);
 
 -- quest_completions: also verify the referenced quest actually belongs to
 -- the caller, so a user can't log a completion against someone else's quest.
+drop policy if exists "quest_completions_select_own" on public.quest_completions;
 create policy "quest_completions_select_own" on public.quest_completions
   for select using (auth.uid() = user_id);
+drop policy if exists "quest_completions_insert_own" on public.quest_completions;
 create policy "quest_completions_insert_own" on public.quest_completions
   for insert
   with check (
@@ -219,11 +240,15 @@ create policy "quest_completions_insert_own" on public.quest_completions
   );
 
 -- nutrition_entries
+drop policy if exists "nutrition_entries_select_own" on public.nutrition_entries;
 create policy "nutrition_entries_select_own" on public.nutrition_entries
   for select using (auth.uid() = user_id);
+drop policy if exists "nutrition_entries_insert_own" on public.nutrition_entries;
 create policy "nutrition_entries_insert_own" on public.nutrition_entries
   for insert with check (auth.uid() = user_id);
+drop policy if exists "nutrition_entries_update_own" on public.nutrition_entries;
 create policy "nutrition_entries_update_own" on public.nutrition_entries
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "nutrition_entries_delete_own" on public.nutrition_entries;
 create policy "nutrition_entries_delete_own" on public.nutrition_entries
   for delete using (auth.uid() = user_id);
